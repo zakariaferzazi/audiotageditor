@@ -35,7 +35,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
   Future<void> _importFromCenterButton() async {
     final audioService = ref.read(audioEditorServiceProvider);
-    final remaining = await audioService.getRemainingFreeEdits();
+    final remaining = await audioService.getRemainingFreeCreations();
     if (remaining == 0) {
       if (mounted) {
         try {
@@ -52,7 +52,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           }
         }
 
-        final updatedRemaining = await audioService.getRemainingFreeEdits();
+        final updatedRemaining = await audioService.getRemainingFreeCreations();
         if (updatedRemaining == 0) return;
       } else {
         return;
@@ -72,7 +72,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         .addFiles(sourceFiles);
 
     if (imported.isNotEmpty) {
-      await audioService.consumeFreeUse();
+      await audioService.consumeFreeCreation();
     }
 
     if (!mounted || imported.isEmpty) return;

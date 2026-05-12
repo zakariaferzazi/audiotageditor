@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:audiotags/audiotags.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -63,7 +62,9 @@ class _AudiosScreenState extends ConsumerState<AudiosScreen> {
     for (final file in files) {
       if (!_tagCache.containsKey(file.path)) {
         try {
-          _tagCache[file.path] = await AudioTags.read(file.path);
+          _tagCache[file.path] = await ref
+              .read(audioEditorServiceProvider)
+              .readTags(file.path);
         } catch (_) {
           _tagCache[file.path] = null;
         }
@@ -229,9 +230,9 @@ class _AudioGridCard extends ConsumerWidget {
     required this.onTap,
   });
 
-  Future<Tag?> _readTag() async {
+  Future<Tag?> _readTag(WidgetRef ref) async {
     try {
-      return await AudioTags.read(file.path);
+      return await ref.read(audioEditorServiceProvider).readTags(file.path);
     } catch (_) {
       return null;
     }
@@ -241,7 +242,7 @@ class _AudioGridCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return FutureBuilder<Tag?>(
       key: ValueKey('${file.path}-$refreshTick'),
-      future: _readTag(),
+      future: _readTag(ref),
       builder: (context, snapshot) {
         final tag = snapshot.data;
         final fileName = file.path.split(RegExp(r'[\\/]')).last;

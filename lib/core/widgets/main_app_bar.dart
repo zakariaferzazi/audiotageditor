@@ -23,7 +23,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   Future<void> _importFiles(BuildContext context, WidgetRef ref) async {
     final audioService = ref.read(audioEditorServiceProvider);
-    final remaining = await audioService.getRemainingFreeEdits();
+    final remaining = await audioService.getRemainingFreeCreations();
     if (remaining == 0) {
       if (context.mounted) {
         try {
@@ -40,7 +40,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
           }
         }
 
-        final updatedRemaining = await audioService.getRemainingFreeEdits();
+        final updatedRemaining = await audioService.getRemainingFreeCreations();
         if (updatedRemaining == 0) return;
       } else {
         return;
@@ -60,7 +60,7 @@ class MainAppBar extends ConsumerWidget implements PreferredSizeWidget {
         .addFiles(sourceFiles);
 
     if (imported.isNotEmpty) {
-      await audioService.consumeFreeUse();
+      await audioService.consumeFreeCreation();
     }
 
     if (!context.mounted || imported.isEmpty) return;

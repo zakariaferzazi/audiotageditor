@@ -18,7 +18,7 @@ class HomeScreen extends ConsumerWidget {
     final files = ref.watch(selectedFilesProvider);
     final audioService = ref.read(audioEditorServiceProvider);
 
-    Future<void> requirePaidAccess() async {
+    Future<void> requirePaidAccessForEdit() async {
       final remaining = await audioService.getRemainingFreeEdits();
       if (remaining != 0) return;
 
@@ -38,6 +38,31 @@ class HomeScreen extends ConsumerWidget {
       }
 
       final updatedRemaining = await audioService.getRemainingFreeEdits();
+      if (updatedRemaining == 0 && context.mounted) {
+        return;
+      }
+    }
+
+    Future<void> requirePaidAccessForCreation() async {
+      final remaining = await audioService.getRemainingFreeCreations();
+      if (remaining != 0) return;
+
+      if (!context.mounted) return;
+      try {
+        await RevenueCatUI.presentPaywallIfNeeded('premium');
+        final newInfo = await audioService.purchaseService.getCustomerInfo();
+        ref.read(customerInfoProvider.notifier).updateInfo(newInfo);
+      } catch (_) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Could not load subscriptions at this time.'),
+            ),
+          );
+        }
+      }
+
+      final updatedRemaining = await audioService.getRemainingFreeCreations();
       if (updatedRemaining == 0 && context.mounted) {
         return;
       }
@@ -76,7 +101,7 @@ class HomeScreen extends ConsumerWidget {
                     title: Text(file.path.split('/').last),
                     subtitle: const Text('Tap to edit tags'),
                     onTap: () async {
-                      await requirePaidAccess();
+                      await requirePaidAccessForEdit();
                       if (!context.mounted) return;
                       final remaining =
                           await audioService.getRemainingFreeEdits();
@@ -92,9 +117,9 @@ class HomeScreen extends ConsumerWidget {
               ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          await requirePaidAccess();
+          await requirePaidAccessForCreation();
           if (!context.mounted) return;
-          if (await audioService.getRemainingFreeEdits() == 0) return;
+          if (await audioService.getRemainingFreeCreations() == 0) return;
 
           final result = await FilePicker.pickFiles(
             type: FileType.audio,
@@ -109,7 +134,7 @@ class HomeScreen extends ConsumerWidget {
               .read(selectedFilesProvider.notifier)
               .addFiles(newFiles);
           if (imported.isNotEmpty) {
-            await audioService.consumeFreeUse();
+            await audioService.consumeFreeCreation();
           }
         },
         label: const Text('Import Audio'),

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:audiotags/audiotags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -119,7 +118,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       year:
           _yearController.text.trim().isEmpty
               ? null
-              : int.tryParse(_yearController.text.trim()),
+              : _yearController.text.trim(),
       trackNumber:
           _trackController.text.trim().isEmpty
               ? null

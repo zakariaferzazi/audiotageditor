@@ -365,7 +365,7 @@ class AlbumsScreen extends ConsumerWidget {
                 ),
               );
             },
-            separatorBuilder: (_, __) => const SizedBox(height: 1),
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
             itemCount: albums.length,
           );
         },

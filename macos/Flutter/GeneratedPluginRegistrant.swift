@@ -5,7 +5,6 @@
 import FlutterMacOS
 import Foundation
 
-import audiotags
 import file_picker
 import file_selector_macos
 import in_app_review
@@ -17,7 +16,6 @@ import sqflite_darwin
 import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  AudiotagsPlugin.register(with: registry.registrar(forPlugin: "AudiotagsPlugin"))
   FilePickerPlugin.register(with: registry.registrar(forPlugin: "FilePickerPlugin"))
   FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
   InAppReviewPlugin.register(with: registry.registrar(forPlugin: "InAppReviewPlugin"))

@@ -5,7 +5,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 
 // Note: Replace with actual keys
 const String _appleApiKey = 'test_IinhKgHlPijKHeURuaOjSGbjkzI';
-const String _googleApiKey = 'test_IinhKgHlPijKHeURuaOjSGbjkzI';
+const String _googleApiKey = 'goog_CdjLXTkQvXYHYAUrjBVlBbcANfi';
 
 final purchaseServiceProvider = Provider<PurchaseService>((ref) {
   throw UnimplementedError('Initialize PurchaseService');
